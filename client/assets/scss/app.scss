@@ -1,0 +1,18 @@
+@import "settings";
+@import "foundation";
+
+input[type="text"].loadinggif {
+  background:
+    url('https://cdnjs.cloudflare.com/ajax/libs/aui/5.6.10/aui-next/css/select2-spinner.gif')
+    no-repeat
+    right center
+    #fff;
+}
+
+.team-cell {
+  margin: 5px 5px 5px 5px;
+}
+
+.team-row:hover {
+  color: #FAF20A;
+}
