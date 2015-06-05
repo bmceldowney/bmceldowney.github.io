@@ -47,7 +47,9 @@ var paths = {
   appJS: [
     'client/assets/js/app.js',
     'client/assets/js/lib/xml2json.js',
-    'client/assets/js/directives/coachDetails.js'
+    'client/assets/js/directives/teamRow.js',
+    'client/assets/js/services/Cache.js',
+    'client/assets/js/services/fumbblData.js'
   ]
 };
 

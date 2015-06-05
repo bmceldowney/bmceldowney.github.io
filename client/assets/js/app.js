@@ -49,38 +49,13 @@
     };
   }
 
-  module.service('xmlHelpers', function () {
-    function parseXml(xml) {
-       var dom = null;
-       if (window.DOMParser) {
-          try {
-             dom = (new DOMParser()).parseFromString(xml, 'text/xml');
-          }
-          catch (e) { dom = null; }
-       }
-       else if (window.ActiveXObject) {
-          try {
-             dom = new window.ActiveXObject('Microsoft.XMLDOM');
-             dom.async = false;
-             if (!dom.loadXML(xml)) {
-                console.log(dom.parseError.reason + dom.parseError.srcText);
-             } // parse error
-          }
-          catch (e) { dom = null; }
-       }
-
-       return dom;
-    }
-
-    return { parseXml: parseXml };
-  });
-
-  module.controller('mainCtrl', function ($scope, $state, xmlHelpers) {
+  module.controller('mainCtrl', function ($scope, $state, fumbblData) {
     console.log('entering mainCtrl');
 
     $scope.$watch('coach', debounce(function (value) {
 
       if (!value) {
+        $state.transitionTo('home');
         $scope.loading = false;
         $scope.teams = [];
         $scope.$apply();
@@ -88,23 +63,33 @@
       }
 
       $scope.loading = true;
-      Parse.Cloud.run('coach', { coachName: value }, {
-        success: function(result) {
+
+      fumbblData.getTeamsByCoachName(value).then(
+        function success (result) {
           $state.transitionTo('home.teamList');
-          var dom = xmlHelpers.parseXml(result);
-          var json = xml2json(dom, ' ');
-          var obj = JSON.parse(json);
+
           $scope.loading = false;
-          $scope.teams = obj.teams.team;
-          $scope.$apply();
+          $scope.teams = result.teams.team;
         },
-        error: function() {
+        function error () {
           $scope.loading = false;
+          $state.transitionTo('home');
           $scope.teams = [];
-          $scope.$apply();
-        }
-      });
+        });
     }, 750));
+  });
+
+  module.controller('');
+
+  module.controller('teamDetailCtrl', function ($stateParams, $scope, fumbblData) {
+    fumbblData.getTeamDataById($stateParams.id).then(
+    function success (result) {
+      $scope.record = result.wins + ' | ' + result.ties + ' | ' + result.losses;
+    },
+    function error () {
+
+    });
+
   });
 
 })();
